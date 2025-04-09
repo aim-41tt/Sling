@@ -25,9 +25,14 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
 
 public abstract class Page {
+
 	private final Map<String, JComponent> componentsById = new HashMap<>();
 	private final JPanel panel = new JPanel();
 	protected App app;
@@ -80,6 +85,14 @@ public abstract class Page {
 		return label;
 	}
 
+	public JScrollPane addTableScrol(Object[][] data, Object[] columnNames, String type) {
+		DefaultTableModel model = new DefaultTableModel(data, columnNames);
+		JTable table = new JTable(model);
+		JScrollPane pane = new JScrollPane(table);
+		panel.add(pane, type);
+		return pane;
+	}
+
 	public void navigateTo(Class<? extends Page> pageClass) {
 		app.navigateTo(pageClass);
 	}
@@ -122,9 +135,9 @@ public abstract class Page {
 	}
 
 	public <T extends JComponent> T addOrGetComponent(Supplier<T> factory) {
-		String id = String.valueOf(factory.get().hashCode())+title.getClass();
+		String id = String.valueOf(factory.get().hashCode()) + title.getClass();
 		System.out.println(id);
-		return addOrGetComponent(id,factory);
+		return addOrGetComponent(id, factory);
 	}
 
 	// Получить компонент по ID

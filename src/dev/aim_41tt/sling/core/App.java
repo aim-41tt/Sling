@@ -21,10 +21,10 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-public class App {
+public final class App {
 	private final JFrame frame;
 	private final Map<Class<? extends Page>, Page> pages = new HashMap<>();
-	private Class<? extends Page> loginPage;
+	private Class<? extends Page> mainPage;
 
 	public App(String title) {
 		frame = new JFrame(title);
@@ -48,8 +48,8 @@ public class App {
 		frame.setSize(x, y);
 	}
 	
-	public void setLoginScreen(Class<? extends Page> loginPage) {
-		this.loginPage = loginPage;
+	public void setMainScreen(Class<? extends Page> loginPage) {
+		this.mainPage = loginPage;
 		addPage(loginPage);
 	}
 
@@ -65,16 +65,11 @@ public class App {
 	}
 
 	public void start() {
-		navigateTo(loginPage);
-		frame.setVisible(true);
-	}
-
-	public void startSpring() {
-		System.setProperty("java.awt.headless", "false");
 		SwingUtilities.invokeLater(() -> {
-			navigateTo(loginPage);
+			navigateTo(mainPage);
 			frame.setVisible(true);
 		});
+		frame.setVisible(true);
 	}
 
 	public void navigateTo(Class<? extends Page> pageClass) {
