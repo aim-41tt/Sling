@@ -25,15 +25,18 @@ public final class App {
 	private final JFrame frame;
 	private final Map<Class<? extends Page>, Page> pages = new HashMap<>();
 	private Class<? extends Page> mainPage;
+	private String title_APP = "";
 
 	public App(String title) {
 		frame = new JFrame(title);
+		title_APP = title;
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(400, 300);
 	}
 
 	public App(String title, int x, int y) {
 		frame = new JFrame(title);
+		title_APP = title;
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(x, y);
 	}
@@ -47,7 +50,7 @@ public final class App {
 	public void setFrameSize(int x, int y) {
 		frame.setSize(x, y);
 	}
-	
+
 	public void setMainScreen(Class<? extends Page> loginPage) {
 		this.mainPage = loginPage;
 		addPage(loginPage);
@@ -63,13 +66,28 @@ public final class App {
 			e.printStackTrace();
 		}
 	}
+	
+	public Page getPage(Class<? extends Page> pageClass) {
+		return pages.get(pageClass);
+	}
+	
+	public Page getPagePattern(Class<? extends Page> pageClass) {
+		try {
+			Page page = pageClass.getDeclaredConstructor().newInstance();
+			page.setApp(this);
+			page.onCreate();
+			return page;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public void start() {
 		SwingUtilities.invokeLater(() -> {
 			navigateTo(mainPage);
 			frame.setVisible(true);
 		});
-		frame.setVisible(true);
 	}
 
 	public void navigateTo(Class<? extends Page> pageClass) {
@@ -77,11 +95,28 @@ public final class App {
 		Page page = pages.get(pageClass);
 		System.out.println(page);
 		if (page != null) {
-			frame.setTitle(page.getTitle());
+			frame.setTitle(title_APP + "" + page.getTitle());
 			frame.add(page.getPanel());
 		}
 		frame.revalidate();
 		frame.repaint();
+	}
+
+	public void repaintPages() {
+		for (Map.Entry<Class<? extends Page>, Page> entry : pages.entrySet()) {
+			Class<? extends Page> key = entry.getKey();
+//			Page val = entry.getValue();
+			
+			Page page = getPage(key);
+			page.repaint();
+			page.onCreate();
+		}
+	}
+	/**
+	 * @return the frame
+	 */
+	public JFrame getFrame() {
+		return frame;
 	}
 
 }

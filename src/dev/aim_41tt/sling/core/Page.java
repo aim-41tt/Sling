@@ -36,7 +36,7 @@ public abstract class Page {
 	private final Map<String, JComponent> componentsById = new HashMap<>();
 	private final JPanel panel = new JPanel();
 	protected App app;
-	private String title = "Окно";
+	private String title = "";
 
 	public Page() {
 		panel.setLayout(new GridLayout(3, 2, 10, 10));
@@ -100,6 +100,8 @@ public abstract class Page {
 	public abstract void onCreate();
 
 	public void repaint() {
+		panel.removeAll();
+		panel.revalidate();
 		panel.repaint();
 	}
 
